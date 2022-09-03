@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
     <title>My Library</title>
 </head>
 <body>
@@ -13,47 +14,29 @@
         <form>
             <div class="input-wrapper">
                 <div class="form-item">
-                    <label for="book">Book</label>
-                    <input type="text">
+                    <label for="book">Name</label>
+                    <input type="text" class="name-input">
                 </div>
                 <div class="form-item">
                     <label for="author">Author</label>
-                    <input type="text">
+                    <input type="text" class="author-input">
                 </div>
                 <div class="form-item">
                     <label for="status">Status</label>
-                    <select name="status" id="status">
+                    <select name="status" id="status" class="book-status">
                         <option value="read">Read</option>
-                        <option value="not-read">Not read</option>
+                        <option value="not read">Not read</option>
                     </select>
                 </div>
             </div>
-            <input type="submit">
+            <input type="submit" class="submit">
         </form>
-        <table>
+        <table class="my-table">
             <tr>
-                <th>Book</th>
+                <th>Name</th>
                 <th>Author</th>
                 <th>Status</th>
                 <th></th>
-            </tr>
-            <tr>
-                <td>Sadh Guru</td>
-                <td>Karma</td>
-                <td><button class="status-button">READ</button></td>
-                <td><button class="delete-button">DELETE</button></td>
-            </tr>
-            <tr>
-                <td>James Clear</td>
-                <td>Atomic Habits</td>
-                <td><button class="status-button">NOT READ</button></td>
-                <td><button class="delete-button">DELETE</button></td>
-            </tr>
-            <tr>
-                <td>Jordan Peterson</td>
-                <td>12 rules of life</td>
-                <td><button class="status-button">READ</button></td>
-                <td><button class="delete-button">DELETE</button></td>
             </tr>
         </table>
     </div>
