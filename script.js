@@ -6,6 +6,7 @@ const myTable = document.querySelector(".my-table");
 submitBtn.addEventListener("click", e => {
     addBookToLibrary(e);
     getDeleteBtn();
+    toggleStatus();
     clearForm();
 });
 
@@ -35,18 +36,27 @@ function addBookToLibrary(e) {
 function displayBook(book) {
     let row = document.createElement("tr");
     row.setAttribute("book-index", bookIndex++);
+
+    Object.values(book).forEach((text, index) => {
+        if (index === 2) {
+            let cell = document.createElement("td");
+            let button = document.createElement("button");
+            button.setAttribute("class", "status-btn");
+            button.textContent = book.status;
+            cell.appendChild(button);
+            row.appendChild(cell);
+        } else {
+            let cell = document.createElement("td");
+            let textNode = document.createTextNode(text);
+            cell.appendChild(textNode);
+            row.appendChild(cell);
+        }
+    })
+
     let cellForBtn = document.createElement("td");
     let deleteBtn = document.createElement("button");
     deleteBtn.setAttribute("class", "delete-btn");
     deleteBtn.textContent = "Delete";
-    
-    Object.values(book).forEach(text => {
-        let cell = document.createElement("td");
-        let textNode = document.createTextNode(text);
-        cell.appendChild(textNode);
-        row.appendChild(cell);
-    })
-
     myTable.appendChild(row);
     row.appendChild(cellForBtn);
     cellForBtn.appendChild(deleteBtn);
@@ -61,7 +71,13 @@ function displayAllBooks() {
 function deleteBook(e) {
     e.remove();
     let index = e.getAttribute("book-index");
+    console.log(index);
     myLibrary.splice(index, 1);
+    bookIndex = -1;
+    const rowIndex = document.querySelectorAll("tr");
+    rowIndex.forEach(book => {
+        book.setAttribute("book-index", bookIndex++);
+    })
     console.log(myLibrary);
 }
 
@@ -72,6 +88,21 @@ function getDeleteBtn() {
     });
 }
 
+function toggleStatus() {
+    const statusBtn = document.querySelectorAll(".status-btn");
+    statusBtn.forEach(btn => {
+        btn.addEventListener("click", () => {
+            if (btn.textContent === "read") {
+                btn.textContent = "not read";
+                // need to change status property in an object
+
+            } else {
+                btn.textContent = "read";
+            }
+        })
+    })
+}
+
 function clearForm() {
     nameInput.value = "";
     authorInput.value = "";
@@ -79,5 +110,6 @@ function clearForm() {
 
 displayAllBooks();
 getDeleteBtn();
+toggleStatus();
 
 
