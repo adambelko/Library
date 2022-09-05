@@ -5,7 +5,6 @@ const bookStatus = document.querySelector(".book-status");
 const myTable = document.querySelector(".my-table");
 submitBtn.addEventListener("click", e => {
     addBookToLibrary(e);
-    getDeleteBtn();
     toggleStatus();
     clearForm();
 });
@@ -55,7 +54,7 @@ function displayBook(book) {
 
     let cellForBtn = document.createElement("td");
     let deleteBtn = document.createElement("button");
-    deleteBtn.setAttribute("class", "delete-btn");
+    deleteBtn.setAttribute("class", "btn-delete");
     deleteBtn.textContent = "Delete";
     myTable.appendChild(row);
     row.appendChild(cellForBtn);
@@ -69,8 +68,10 @@ function displayAllBooks() {
 }
 
 function deleteBook(e) {
-    e.remove();
-    let index = e.getAttribute("book-index");
+    console.log(e)
+    const targetRow = e.parentNode.parentNode;
+    targetRow.remove();
+    let index = targetRow.getAttribute("book-index");
     console.log(index);
     myLibrary.splice(index, 1);
     bookIndex = -1;
@@ -79,13 +80,6 @@ function deleteBook(e) {
         book.setAttribute("book-index", bookIndex++);
     })
     console.log(myLibrary);
-}
-
-function getDeleteBtn() {
-    const allDeleteBtns = document.querySelectorAll(".delete-btn");
-    allDeleteBtns.forEach(btn => {
-        btn.addEventListener("click", (e) => deleteBook(e.target.parentNode.parentNode))
-    });
 }
 
 function toggleStatus() {
@@ -109,7 +103,14 @@ function clearForm() {
 }
 
 displayAllBooks();
-getDeleteBtn();
 toggleStatus();
 
+const table = document.querySelector("table");
+table.addEventListener("click", e => {
+    let target = e.target.closest(".btn-delete");
+    
+    if (!target) return;
+    if (!table.contains(target)) return;
 
+    deleteBook(target);
+})
