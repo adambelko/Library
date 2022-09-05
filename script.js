@@ -2,12 +2,28 @@ const submitBtn = document.querySelector(".submit");
 const nameInput = document.querySelector(".name-input");
 const authorInput = document.querySelector(".author-input");
 const bookStatus = document.querySelector(".book-status");
-const myTable = document.querySelector(".my-table");
+const table = document.querySelector("table");
+
 submitBtn.addEventListener("click", e => {
     addBookToLibrary(e);
-    toggleStatus();
     clearForm();
 });
+
+table.addEventListener("click", e => {
+    let targetDeleteBtn = e.target.closest(".delete-btn");
+    
+    if (!targetDeleteBtn) return;
+    if (!table.contains(targetDeleteBtn)) return;
+    deleteBook(targetDeleteBtn);
+})
+
+table.addEventListener("click", e => {
+    let targetStatusBtn = e.target.closest(".status-btn");
+    
+    if (!targetStatusBtn) return;
+    if (!table.contains(targetStatusBtn)) return;
+    toggleStatus(targetStatusBtn);
+})
 
 let bookIndex = 0;
 
@@ -32,11 +48,18 @@ function addBookToLibrary(e) {
     displayBook(newBook);
 }
 
+function displayAllBooks() {
+    myLibrary.forEach(book => {
+        displayBook(book);
+    });
+}
+
 function displayBook(book) {
     let row = document.createElement("tr");
     row.setAttribute("book-index", bookIndex++);
 
     Object.values(book).forEach((text, index) => {
+
         if (index === 2) {
             let cell = document.createElement("td");
             let button = document.createElement("button");
@@ -44,6 +67,7 @@ function displayBook(book) {
             button.textContent = book.status;
             cell.appendChild(button);
             row.appendChild(cell);
+
         } else {
             let cell = document.createElement("td");
             let textNode = document.createTextNode(text);
@@ -54,47 +78,47 @@ function displayBook(book) {
 
     let cellForBtn = document.createElement("td");
     let deleteBtn = document.createElement("button");
-    deleteBtn.setAttribute("class", "btn-delete");
+    deleteBtn.setAttribute("class", "delete-btn");
     deleteBtn.textContent = "Delete";
-    myTable.appendChild(row);
+    table.appendChild(row);
     row.appendChild(cellForBtn);
     cellForBtn.appendChild(deleteBtn);
-}
-
-function displayAllBooks() {
-    myLibrary.forEach(book => {
-        displayBook(book);
-    });
 }
 
 function deleteBook(e) {
     console.log(e)
     const targetRow = e.parentNode.parentNode;
     targetRow.remove();
-    let index = targetRow.getAttribute("book-index");
+    const index = targetRow.getAttribute("book-index");
     console.log(index);
     myLibrary.splice(index, 1);
     bookIndex = -1;
     const rowIndex = document.querySelectorAll("tr");
+
     rowIndex.forEach(book => {
         book.setAttribute("book-index", bookIndex++);
     })
     console.log(myLibrary);
 }
 
-function toggleStatus() {
-    const statusBtn = document.querySelectorAll(".status-btn");
-    statusBtn.forEach(btn => {
-        btn.addEventListener("click", () => {
-            if (btn.textContent === "read") {
-                btn.textContent = "not read";
-                // need to change status property in an object
+function toggleStatus(e) {
+    console.log(e)
+    const targetRow = e.parentNode.parentNode;
+    const index = targetRow.getAttribute("book-index");
+    const bookObj = myLibrary[index];
+    
+    if (e.textContent === "read") {
+        e.textContent = "not read";
+        bookObj.status = "not read";
+        console.log(bookObj);
+        
 
-            } else {
-                btn.textContent = "read";
-            }
-        })
-    })
+    } else {
+        e.textContent = "read";
+        bookObj.status = "read";
+        console.log(bookObj);
+    }
+    console.log(myLibrary);
 }
 
 function clearForm() {
@@ -103,14 +127,4 @@ function clearForm() {
 }
 
 displayAllBooks();
-toggleStatus();
 
-const table = document.querySelector("table");
-table.addEventListener("click", e => {
-    let target = e.target.closest(".btn-delete");
-    
-    if (!target) return;
-    if (!table.contains(target)) return;
-
-    deleteBook(target);
-})
