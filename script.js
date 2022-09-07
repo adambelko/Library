@@ -33,10 +33,12 @@ let myLibrary = [
     {name: "Atomic Habits", author: "James Clear", status: "not read"}, 
 ];
 
-function Books(name, author, status) {
-    this.name = name;
-    this.author = author;
-    this.status = status;
+class Books {
+    constructor(name, author, status) {
+        this.name = name;
+        this.author = author;
+        this.status = status;
+    }
 }
 
 function addBookToLibrary(e) {
@@ -44,7 +46,6 @@ function addBookToLibrary(e) {
 
     let newBook = new Books(nameInput.value, authorInput.value, bookStatus.value);
     myLibrary.push(newBook);
-    console.log(myLibrary);
     displayBook(newBook);
 }
 
@@ -86,11 +87,9 @@ function displayBook(book) {
 }
 
 function deleteBook(e) {
-    console.log(e)
     const targetRow = e.parentNode.parentNode;
     targetRow.remove();
     const index = targetRow.getAttribute("book-index");
-    console.log(index);
     myLibrary.splice(index, 1);
     bookIndex = -1;
     const rowIndex = document.querySelectorAll("tr");
@@ -98,11 +97,9 @@ function deleteBook(e) {
     rowIndex.forEach(book => {
         book.setAttribute("book-index", bookIndex++);
     })
-    console.log(myLibrary);
 }
 
 function toggleStatus(e) {
-    console.log(e)
     const targetRow = e.parentNode.parentNode;
     const index = targetRow.getAttribute("book-index");
     const bookObj = myLibrary[index];
@@ -110,15 +107,11 @@ function toggleStatus(e) {
     if (e.textContent === "read") {
         e.textContent = "not read";
         bookObj.status = "not read";
-        console.log(bookObj);
         
-
     } else {
         e.textContent = "read";
         bookObj.status = "read";
-        console.log(bookObj);
     }
-    console.log(myLibrary);
 }
 
 function clearForm() {
