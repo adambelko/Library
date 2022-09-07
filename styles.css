@@ -5,13 +5,15 @@ html {
 }
 
 .wrapper {
-    border: 2px solid black;
+    border: 2px solid #393939;
     display: flex;
     flex-direction: column;
     align-items: center;
     font-size: 1.5rem;
     width: 800px;
+    height: 80vh;
     margin: 0 auto;
+    overflow: auto;
 }
 
 .input-wrapper {
@@ -30,8 +32,13 @@ select {
     height: 2.2rem;
 }
 
+.book-status {
+    height: 100%;
+}
+
 table {
     margin-top: 5rem;
+    margin-bottom: 2rem;
     border-collapse: collapse;
     width: 80%;
 }
@@ -45,3 +52,7 @@ td, th {
 tr:nth-child(even) {
     background-color: #dddddd;
   }
+
+.detelte-btn {
+    padding: 0.4rem;
+}
