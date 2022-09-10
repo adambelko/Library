@@ -104,13 +104,13 @@ function toggleStatus(e) {
     const index = targetRow.getAttribute("book-index");
     const bookObj = myLibrary[index];
     
-    if (e.textContent === "read") {
-        e.textContent = "not read";
-        bookObj.status = "not read";
-        
-    } else {
-        e.textContent = "read";
+    if (bookObj.status === "not read") {
         bookObj.status = "read";
+        e.textContent = bookObj.status;
+
+    } else {
+        bookObj.status = "not read";
+        e.textContent = bookObj.status;
     }
 }
 
