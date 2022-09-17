@@ -10,23 +10,22 @@ submitBtn.addEventListener("click", e => {
 });
 
 table.addEventListener("click", e => {
-    let targetDeleteBtn = e.target.closest(".delete-btn");
+    let deleteBtn = e.target.closest(".delete-btn");
     
-    if (!targetDeleteBtn) return;
-    if (!table.contains(targetDeleteBtn)) return;
-    deleteBook(targetDeleteBtn);
+    if (!deleteBtn) return;
+    if (!table.contains(deleteBtn)) return;
+    deleteBook(deleteBtn);
 })
 
 table.addEventListener("click", e => {
-    let targetStatusBtn = e.target.closest(".status-btn");
+    let statusBtn = e.target.closest(".status-btn");
     
-    if (!targetStatusBtn) return;
-    if (!table.contains(targetStatusBtn)) return;
-    toggleStatus(targetStatusBtn);
+    if (!statusBtn) return;
+    if (!table.contains(statusBtn)) return;
+    toggleStatus(statusBtn);
 })
 
 let bookIndex = 0;
-
 let myLibrary = [
     {name: "Karma", author: "SadhGuru", status: "read"},
     {name: "12 Rules Of Life", author: "Jordan Peterson", status: "read"}, 
@@ -58,52 +57,69 @@ function displayAllBooks() {
 function displayBook(book) {
     let row = document.createElement("tr");
     row.setAttribute("book-index", bookIndex++);
+    returnBookValues(book, row);
+    createDeleteCell(row);
+}
 
+function returnBookValues(book, row) {
     Object.values(book).forEach((text, index) => {
-
         if (index === 2) {
-            let cell = document.createElement("td");
-            let button = document.createElement("button");
-            button.setAttribute("class", "status-btn");
-            button.textContent = book.status;
-            cell.appendChild(button);
-            row.appendChild(cell);
+            createStatusCell(book, row);
 
         } else {
-            let cell = document.createElement("td");
-            let textNode = document.createTextNode(text);
-            cell.appendChild(textNode);
-            row.appendChild(cell);
+            createCell(text, row);
         }
     })
+}
 
-    let cellForBtn = document.createElement("td");
+function createCell(text, row) {
+    let cell = document.createElement("td");
+    let textNode = document.createTextNode(text);
+    cell.appendChild(textNode);
+    row.appendChild(cell);
+}
+
+function createStatusCell(book, row) {
+    let cellForStatusBtn = document.createElement("td");
+    let statusButton = document.createElement("button");
+    statusButton.setAttribute("class", "status-btn");
+    statusButton.textContent = book.status;
+    cellForStatusBtn.appendChild(statusButton);
+    row.appendChild(cellForStatusBtn);
+}
+
+function createDeleteCell(row) {
+    let cellForDeleteBtn = document.createElement("td");
     let deleteBtn = document.createElement("button");
     deleteBtn.setAttribute("class", "delete-btn");
     deleteBtn.textContent = "Delete";
     table.appendChild(row);
-    row.appendChild(cellForBtn);
-    cellForBtn.appendChild(deleteBtn);
+    row.appendChild(cellForDeleteBtn);
+    cellForDeleteBtn.appendChild(deleteBtn);
+}
+
+function getBookData(e) {
+    const targetRow = e.parentNode.parentNode;
+    const index = targetRow.getAttribute("book-index");
+    return {targetRow, index};
 }
 
 function deleteBook(e) {
-    const targetRow = e.parentNode.parentNode;
-    targetRow.remove();
-    const index = targetRow.getAttribute("book-index");
-    myLibrary.splice(index, 1);
+    const book = getBookData(e);
+    book.targetRow.remove();
+    myLibrary.splice(book.index, 1);
     bookIndex = -1;
     const rowIndex = document.querySelectorAll("tr");
-
+    
     rowIndex.forEach(book => {
         book.setAttribute("book-index", bookIndex++);
     })
 }
 
 function toggleStatus(e) {
-    const targetRow = e.parentNode.parentNode;
-    const index = targetRow.getAttribute("book-index");
-    const bookObj = myLibrary[index];
-    
+    const book = getBookData(e);
+    const bookObj = myLibrary[book.index];
+
     if (bookObj.status === "not read") {
         bookObj.status = "read";
         e.textContent = bookObj.status;
@@ -113,6 +129,7 @@ function toggleStatus(e) {
         e.textContent = bookObj.status;
     }
 }
+
 
 function clearForm() {
     nameInput.value = "";
