@@ -4,32 +4,30 @@ const authorInput = document.querySelector(".author-input");
 const bookStatus = document.querySelector(".book-status");
 const table = document.querySelector("table");
 
-submitBtn.addEventListener("click", e => {
-    addBookToLibrary(e);
-    clearForm();
+submitBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    validateForm();
 });
 
-table.addEventListener("click", e => {
+table.addEventListener("click", (e) => {
     let deleteBtn = e.target.closest(".delete-btn");
-    
     if (!deleteBtn) return;
     if (!table.contains(deleteBtn)) return;
     deleteBook(deleteBtn);
-})
+});
 
-table.addEventListener("click", e => {
+table.addEventListener("click", (e) => {
     let statusBtn = e.target.closest(".status-btn");
-    
     if (!statusBtn) return;
     if (!table.contains(statusBtn)) return;
     toggleStatus(statusBtn);
-})
+});
 
 let bookIndex = 0;
 let myLibrary = [
     {name: "Karma", author: "SadhGuru", status: "read"},
-    {name: "12 Rules Of Life", author: "Jordan Peterson", status: "read"}, 
-    {name: "Atomic Habits", author: "James Clear", status: "not read"}, 
+    {name: "12 Rules Of Life", author: "Jordan Peterson", status: "read"},
+    {name: "Atomic Habits", author: "James Clear", status: "not read"},
 ];
 
 class Books {
@@ -40,12 +38,37 @@ class Books {
     }
 }
 
-function addBookToLibrary(e) {
-    e.preventDefault();
-
+function addBook() {
     let newBook = new Books(nameInput.value, authorInput.value, bookStatus.value);
     myLibrary.push(newBook);
-    displayBook(newBook);
+    checkBookDuplicate() === true ? myLibrary.pop() : displayBook(newBook);
+}
+
+function checkBookDuplicate() {
+    const uniqueValues = new Set(myLibrary.map(value => value.name));
+    return (uniqueValues.size < myLibrary.length) ? true : false;
+}
+
+function validateForm() {
+    const nameValue = nameInput.value.trim().length;
+    const authorValue = authorInput.value.trim().length;
+
+    if (nameValue !== 0 && authorValue !== 0) {
+        addBook();
+        clearForm();
+
+    } else if (authorValue === 0 && nameValue === 0) {
+        nameInput.style.border = "solid red";
+        authorInput.style.border = "solid red";
+
+    } else if (nameValue !== 0 && authorValue === 0) {
+        nameInput.style.border = "solid #393939";
+        authorInput.style.border = "solid red";
+
+    } else if (authorValue !== 0 && nameValue === 0) {
+        authorInput.style.border = "solid #393939";
+        nameInput.style.border = "solid red";
+    }
 }
 
 function displayAllBooks() {
@@ -63,13 +86,14 @@ function displayBook(book) {
 
 function returnBookValues(book, row) {
     Object.values(book).forEach((text, index) => {
+
         if (index === 2) {
             createStatusCell(book, row);
 
         } else {
             createCell(text, row);
         }
-    })
+    });
 }
 
 function createCell(text, row) {
@@ -110,10 +134,9 @@ function deleteBook(e) {
     myLibrary.splice(book.index, 1);
     bookIndex = -1;
     const rowIndex = document.querySelectorAll("tr");
-    
     rowIndex.forEach(book => {
         book.setAttribute("book-index", bookIndex++);
-    })
+    });
 }
 
 function toggleStatus(e) {
@@ -130,10 +153,11 @@ function toggleStatus(e) {
     }
 }
 
-
 function clearForm() {
     nameInput.value = "";
     authorInput.value = "";
+    nameInput.style.border = "solid #393939";
+    authorInput.style.border = "solid #393939";
 }
 
 displayAllBooks();
