@@ -23,6 +23,8 @@ table.addEventListener("click", (e) => {
     toggleStatus(statusBtn);
 });
 
+
+
 let bookIndex = 0;
 let myLibrary = [
     {name: "Karma", author: "SadhGuru", status: "read"},
@@ -57,17 +59,17 @@ function validateForm() {
         addBook();
         clearForm();
 
-    } else if (authorValue === 0 && nameValue === 0) {
-        nameInput.style.border = "solid red";
-        authorInput.style.border = "solid red";
+    } else if (nameValue === 0 && authorValue === 0) {
+        nameInput.dataset.state = "invalid";
+        authorInput.dataset.state = "invalid";
 
     } else if (nameValue !== 0 && authorValue === 0) {
-        nameInput.style.border = "solid #393939";
-        authorInput.style.border = "solid red";
+        nameInput.dataset.state = "valid";
+        authorInput.dataset.state = "invalid";
 
-    } else if (authorValue !== 0 && nameValue === 0) {
-        authorInput.style.border = "solid #393939";
-        nameInput.style.border = "solid red";
+    } else if (nameValue === 0 && authorValue !== 0) {
+        nameInput.dataset.state = "invalid";
+        authorInput.dataset.state = "valid";
     }
 }
 
@@ -91,12 +93,12 @@ function returnBookValues(book, row) {
             createStatusCell(book, row);
 
         } else {
-            createCell(text, row);
+            createTableCell(text, row);
         }
     });
 }
 
-function createCell(text, row) {
+function createTableCell(text, row) {
     let cell = document.createElement("td");
     let textNode = document.createTextNode(text);
     cell.appendChild(textNode);
@@ -118,8 +120,8 @@ function createDeleteCell(row) {
     deleteBtn.setAttribute("class", "delete-btn");
     deleteBtn.textContent = "Delete";
     table.appendChild(row);
-    row.appendChild(cellForDeleteBtn);
     cellForDeleteBtn.appendChild(deleteBtn);
+    row.appendChild(cellForDeleteBtn);
 }
 
 function getBookData(e) {
@@ -132,9 +134,13 @@ function deleteBook(e) {
     const book = getBookData(e);
     book.targetRow.remove();
     myLibrary.splice(book.index, 1);
+    resetBookIndex();
+}
+
+function resetBookIndex() {
     bookIndex = -1;
-    const rowIndex = document.querySelectorAll("tr");
-    rowIndex.forEach(book => {
+    const tableRowIndex = document.querySelectorAll("tr");
+    tableRowIndex.forEach(book => {
         book.setAttribute("book-index", bookIndex++);
     });
 }
@@ -142,11 +148,11 @@ function deleteBook(e) {
 function toggleStatus(e) {
     const book = getBookData(e);
     const bookObj = myLibrary[book.index];
-
+    
     if (bookObj.status === "not read") {
         bookObj.status = "read";
         e.textContent = bookObj.status;
-
+        
     } else {
         bookObj.status = "not read";
         e.textContent = bookObj.status;
@@ -156,8 +162,8 @@ function toggleStatus(e) {
 function clearForm() {
     nameInput.value = "";
     authorInput.value = "";
-    nameInput.style.border = "solid #393939";
-    authorInput.style.border = "solid #393939";
+    nameInput.dataset.state = "valid";
+    authorInput.dataset.state = "valid";
 }
 
 displayAllBooks();
