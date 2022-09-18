@@ -23,8 +23,6 @@ table.addEventListener("click", (e) => {
     toggleStatus(statusBtn);
 });
 
-
-
 let bookIndex = 0;
 let myLibrary = [
     {name: "Karma", author: "SadhGuru", status: "read"},
@@ -98,6 +96,15 @@ function returnBookValues(book, row) {
     });
 }
 
+function createTemplateCell(row, className) {
+    let cell = document.createElement("td");
+    let btn = document.createElement("button");
+    btn.setAttribute("class", `${className}`);
+    cell.appendChild(btn);
+    row.appendChild(cell);
+    return {btn};
+}
+
 function createTableCell(text, row) {
     let cell = document.createElement("td");
     let textNode = document.createTextNode(text);
@@ -106,22 +113,14 @@ function createTableCell(text, row) {
 }
 
 function createStatusCell(book, row) {
-    let cellForStatusBtn = document.createElement("td");
-    let statusButton = document.createElement("button");
-    statusButton.setAttribute("class", "status-btn");
-    statusButton.textContent = book.status;
-    cellForStatusBtn.appendChild(statusButton);
-    row.appendChild(cellForStatusBtn);
+    const status = createTemplateCell(row, "status-btn");
+    status.btn.textContent = book.status;
 }
 
 function createDeleteCell(row) {
-    let cellForDeleteBtn = document.createElement("td");
-    let deleteBtn = document.createElement("button");
-    deleteBtn.setAttribute("class", "delete-btn");
-    deleteBtn.textContent = "Delete";
+    const del = createTemplateCell(row, "delete-btn");
+    del.btn.textContent = "Delete";
     table.appendChild(row);
-    cellForDeleteBtn.appendChild(deleteBtn);
-    row.appendChild(cellForDeleteBtn);
 }
 
 function getBookData(e) {
