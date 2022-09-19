@@ -1,7 +1,7 @@
-const submitBtn = document.querySelector(".submit");
-const nameInput = document.querySelector(".name-input");
-const authorInput = document.querySelector(".author-input");
-const bookStatus = document.querySelector(".book-status");
+const submitBtn = document.querySelector(".main__submit-form-btn");
+const nameInput = document.querySelector(".main__name-input");
+const authorInput = document.querySelector(".main__author-input");
+const bookStatus = document.querySelector(".main__book-status");
 const table = document.querySelector("table");
 
 submitBtn.addEventListener("click", (e) => {
@@ -20,7 +20,7 @@ table.addEventListener("click", (e) => {
     let statusBtn = e.target.closest(".status-btn");
     if (!statusBtn) return;
     if (!table.contains(statusBtn)) return;
-    toggleStatus(statusBtn);
+    toggleBookStatus(statusBtn);
 });
 
 let bookIndex = 0;
@@ -36,17 +36,6 @@ class Books {
         this.author = author;
         this.status = status;
     }
-}
-
-function addBook() {
-    let newBook = new Books(nameInput.value, authorInput.value, bookStatus.value);
-    myLibrary.push(newBook);
-    checkBookDuplicate() === true ? myLibrary.pop() : displayBook(newBook);
-}
-
-function checkBookDuplicate() {
-    const uniqueValues = new Set(myLibrary.map(value => value.name));
-    return (uniqueValues.size < myLibrary.length) ? true : false;
 }
 
 function validateForm() {
@@ -69,6 +58,17 @@ function validateForm() {
         nameInput.dataset.state = "invalid";
         authorInput.dataset.state = "valid";
     }
+}
+
+function addBook() {
+    let newBook = new Books(nameInput.value, authorInput.value, bookStatus.value);
+    myLibrary.push(newBook);
+    checkBookDuplicate() === true ? myLibrary.pop() : displayBook(newBook);
+}
+
+function checkBookDuplicate() {
+    const uniqueName = new Set(myLibrary.map(value => value.name.toLocaleLowerCase()));
+    return (uniqueName.size < myLibrary.length) ? true : false;
 }
 
 function displayAllBooks() {
@@ -102,7 +102,7 @@ function createTemplateCell(row, className) {
     btn.setAttribute("class", `${className}`);
     cell.appendChild(btn);
     row.appendChild(cell);
-    return {btn};
+    return {cell, btn};
 }
 
 function createTableCell(text, row) {
@@ -119,6 +119,7 @@ function createStatusCell(book, row) {
 
 function createDeleteCell(row) {
     const del = createTemplateCell(row, "delete-btn");
+    del.cell.setAttribute("class", "td-delete");
     del.btn.textContent = "Delete";
     table.appendChild(row);
 }
@@ -144,14 +145,14 @@ function resetBookIndex() {
     });
 }
 
-function toggleStatus(e) {
+function toggleBookStatus(e) {
     const book = getBookData(e);
     const bookObj = myLibrary[book.index];
-    
+
     if (bookObj.status === "not read") {
         bookObj.status = "read";
         e.textContent = bookObj.status;
-        
+
     } else {
         bookObj.status = "not read";
         e.textContent = bookObj.status;
