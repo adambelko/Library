@@ -96,12 +96,15 @@ function returnBookValues(book, row) {
     });
 }
 
-function createTemplateCell(row, className) {
+function createTemplateCell(row, tdClassName, btnClassName, btnText) {
     let cell = document.createElement("td");
+    cell.setAttribute("class", `${tdClassName}`);
     let btn = document.createElement("button");
-    btn.setAttribute("class", `${className}`);
+    btn.setAttribute("class", `${btnClassName}`);
+    btn.textContent = btnText;
     cell.appendChild(btn);
     row.appendChild(cell);
+    table.appendChild(row);
     return {cell, btn};
 }
 
@@ -113,15 +116,11 @@ function createTableCell(text, row) {
 }
 
 function createStatusCell(book, row) {
-    const status = createTemplateCell(row, "status-btn");
-    status.btn.textContent = book.status;
+    const stat = createTemplateCell(row, "td-status", "status-btn", book.status);
 }
 
 function createDeleteCell(row) {
-    const del = createTemplateCell(row, "delete-btn");
-    del.cell.setAttribute("class", "td-delete");
-    del.btn.textContent = "Delete";
-    table.appendChild(row);
+    const del = createTemplateCell(row ,"td-delete", "delete-btn", "Delete");
 }
 
 function getBookData(e) {
